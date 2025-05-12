@@ -247,3 +247,32 @@
     )
   )
 )
+
+;; Advanced Utility Functions
+;; Square Root Function for Quadratic Voting
+(define-read-only (sqrti (x uint)) 
+  (if (or (is-eq x u0) (is-eq x u1))
+    x
+    (let 
+      (
+        (z (+ x u1))
+        (y (/ (+ (/ x z) z) u2))
+      )
+      (if (<= y z)
+        y
+        (sqrti y)
+      )
+    )
+  )
+)
+
+;; Get Proposal Details
+(define-read-only (get-proposal-details (proposal-id uint))
+  (map-get? proposals {proposal-id: proposal-id})
+)
+
+;; Get Voting Power
+(define-read-only (get-voting-power (voter principal))
+  (ft-get-balance governance-token voter)
+)
+
