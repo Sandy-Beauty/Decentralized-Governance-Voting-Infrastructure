@@ -8,6 +8,11 @@
 (define-constant ERR-INVALID-DELEGATION (err u6))
 (define-constant ERR-EXCEEDED-DELEGATION-DEPTH (err u7))
 (define-constant ERR-PROPOSAL-EXECUTION-FAILED (err u8))
+(define-constant ERR-COOLDOWN-PERIOD (err u9))
+(define-constant ERR-INVALID-TIMELOCK (err u10))
+(define-constant ERR-VOTE-QUORUM-NOT-REACHED (err u11))
+(define-constant ERR-TREASURY-LIMIT-EXCEEDED (err u12))
+
 
 ;; Governance Token - SBT (Semi-Bound Token) for Voting Power
 (define-fungible-token governance-token u10000000)
@@ -305,4 +310,31 @@
     )
     (ok true)
   )
+)
+
+;; NEW FEATURE: Vote Types (beyond simple yes/no)
+(define-constant VOTE-TYPES 
+  {
+    FOR: u1,
+    AGAINST: u2,
+    ABSTAIN: u3
+  }
+)
+
+;; Governance configuration variables
+(define-data-var min-proposal-duration uint u144) ;; Default: ~1 day at 10 min block times
+(define-data-var max-proposal-duration uint u4320) ;; Default: ~30 days at 10 min block times
+(define-data-var proposal-submission-min-tokens uint u100000) ;; Minimum tokens to submit proposal
+(define-data-var treasury-max-per-proposal uint u100000000) ;; 10% of total token supply
+
+;; Treasury management
+(define-data-var treasury-balance uint u0)
+(define-map treasury-allocations
+  {allocation-id: uint}
+  {
+    proposal-id: uint,
+    recipient: principal,
+    amount: uint,
+    executed: bool
+  }
 )
