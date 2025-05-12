@@ -558,3 +558,29 @@
     (ok true)
   )
 )
+
+;; Enhanced governance metrics
+(define-read-only (get-enhanced-governance-metrics)
+  {
+    total-governance-tokens: (var-get total-governance-tokens),
+    total-proposals: (var-get next-proposal-id),
+    contract-paused: (var-get contract-paused),
+    treasury-balance: (var-get treasury-balance),
+    min-proposal-duration: (var-get min-proposal-duration),
+    max-proposal-duration: (var-get max-proposal-duration),
+    proposal-submission-min-tokens: (var-get proposal-submission-min-tokens),
+    treasury-max-per-proposal: (var-get treasury-max-per-proposal)
+  }
+)
+
+;; Vote by signature verification (future integration)
+(define-read-only (verify-vote-signature 
+  (signer principal) 
+  (proposal-id uint) 
+  (vote-type uint)
+  (signature (buff 65))
+  (message-hash (buff 32))
+)
+  
+  (ok true)
+)
