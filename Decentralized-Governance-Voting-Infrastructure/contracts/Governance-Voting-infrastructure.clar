@@ -248,24 +248,6 @@
   )
 )
 
-;; Advanced Utility Functions
-;; Square Root Function for Quadratic Voting
-(define-read-only (sqrti (x uint)) 
-  (if (or (is-eq x u0) (is-eq x u1))
-    x
-    (let 
-      (
-        (z (+ x u1))
-        (y (/ (+ (/ x z) z) u2))
-      )
-      (if (<= y z)
-        y
-        (sqrti y)
-      )
-    )
-  )
-)
-
 ;; Get Proposal Details
 (define-read-only (get-proposal-details (proposal-id uint))
   (map-get? proposals {proposal-id: proposal-id})
@@ -276,3 +258,22 @@
   (ft-get-balance governance-token voter)
 )
 
+;; Revoke Delegation
+(define-public (revoke-delegation)
+  (begin
+    (map-delete delegations tx-sender)
+    (ok true)
+  )
+)
+
+;; Admin Functions
+;; Upgrade Governance Parameters (Controlled by Contract Owner)
+(define-public (upgrade-governance-params 
+  (new-max-delegation-depth uint)
+)
+  (begin
+    (asserts! (is-eq tx-sender CONTRACT-OWNER) ERR-UNAUTHORIZED)
+    ;; Future expansion for upgrading governance parameters
+    (ok true)
+  )
+)
