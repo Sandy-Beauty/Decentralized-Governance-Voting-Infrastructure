@@ -350,7 +350,7 @@
   }
 )
 
-;; NEW FEATURE: Time-locked proposal execution 
+;; Time-locked proposal execution 
 (define-public (schedule-time-locked-execution (proposal-id uint) (delay-blocks uint))
   (let 
     (
@@ -388,3 +388,36 @@
 )
 
 
+;; NEW FEATURE: Execute time-locked proposal
+(define-public (execute-time-locked-proposal (proposal-id uint))
+  (let 
+    (
+      (proposal (unwrap! (map-get? proposals {proposal-id: proposal-id}) ERR-INVALID-PROPOSAL))
+      (time-lock (unwrap! (map-get? time-locks {proposal-id: proposal-id}) ERR-INVALID-TIMELOCK))
+      (current-block stacks-block-height)
+    )
+    ;; Validation Checks
+    (asserts! (not (get executed proposal)) ERR-UNAUTHORIZED)
+    (asserts! (not (get executed time-lock)) ERR-UNAUTHORIZED)
+    (asserts! (>= current-block (get execution-block time-lock)) ERR-INVALID-TIMELOCK)
+    
+    ;; Update Time Lock Status
+    (map-set time-locks
+      {proposal-id: proposal-id}
+      (merge time-lock {executed: true})
+    )
+    
+    ;; Update Proposal Status
+    (map-set proposals 
+      {proposal-id: proposal-id}
+      (merge proposal 
+        {
+          executed: true,
+          execution-result: (some true)
+        }
+      )
+    )
+    
+    (ok true)
+  )
+)
