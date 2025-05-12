@@ -40,3 +40,26 @@
     pass-threshold: uint
   }
 )
+
+;; Voting Records
+(define-map votes 
+  {proposal-id: uint, voter: principal}
+  {
+    voting-power: uint,
+    vote-type: bool,
+    quadratic-weight: uint,
+    timestamp: uint
+  }
+)
+
+;; Delegation Mapping
+(define-map delegations 
+  principal 
+  {
+    delegated-to: principal,
+    delegation-depth: uint,
+    max-delegation-depth: uint,
+    delegated-at: uint
+  }
+)
+
