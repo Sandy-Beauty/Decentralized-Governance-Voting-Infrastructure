@@ -174,3 +174,31 @@
   )
 )
 
+;; Delegation System with Advanced Features
+(define-public (delegate-voting-power 
+  (delegate principal)
+  (max-depth uint)
+)
+  (let 
+    (
+      (current-block stacks-block-height)
+      (current-delegation (map-get? delegations tx-sender))
+    )
+    ;; Validation Checks
+    (asserts! (not (is-eq tx-sender delegate)) ERR-INVALID-DELEGATION)
+    (asserts! (or (is-none current-delegation) (< (unwrap-panic (get delegation-depth current-delegation)) max-depth)) ERR-EXCEEDED-DELEGATION-DEPTH)
+    
+    ;; Set Delegation
+    (map-set delegations 
+      tx-sender 
+      {
+        delegated-to: delegate,
+        delegation-depth: u0,
+        max-delegation-depth: max-depth,
+        delegated-at: current-block
+      }
+    )
+    
+    (ok true)
+  )
+)
