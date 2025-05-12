@@ -524,3 +524,37 @@
   )
 )
 
+;; Comprehensive governance parameter update
+(define-public (update-governance-parameters
+  (new-min-proposal-duration (optional uint))
+  (new-max-proposal-duration (optional uint))
+  (new-proposal-submission-min-tokens (optional uint))
+  (new-treasury-max-per-proposal (optional uint))
+)
+  (begin
+    (asserts! (is-eq tx-sender CONTRACT-OWNER) ERR-UNAUTHORIZED)
+    
+    ;; Update parameters if provided
+    (if (is-some new-min-proposal-duration)
+      (var-set min-proposal-duration (unwrap-panic new-min-proposal-duration))
+      true
+    )
+    
+    (if (is-some new-max-proposal-duration)
+      (var-set max-proposal-duration (unwrap-panic new-max-proposal-duration))
+      true
+    )
+    
+    (if (is-some new-proposal-submission-min-tokens)
+      (var-set proposal-submission-min-tokens (unwrap-panic new-proposal-submission-min-tokens))
+      true
+    )
+    
+    (if (is-some new-treasury-max-per-proposal)
+      (var-set treasury-max-per-proposal (unwrap-panic new-treasury-max-per-proposal))
+      true
+    )
+    
+    (ok true)
+  )
+)
